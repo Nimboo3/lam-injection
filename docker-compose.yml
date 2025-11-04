@@ -1,0 +1,114 @@
+version: '3.8'
+
+services:
+  # Main benchmark service
+  benchmark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agentic-prompt-injection-benchmark:latest
+    container_name: prompt-injection-benchmark
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./results:/app/results
+    environment:
+      - PYTHONUNBUFFERED=1
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    command: pytest tests/ -v
+    networks:
+      - benchmark-network
+
+  # Jupyter notebook service for analysis
+  jupyter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agentic-prompt-injection-benchmark:latest
+    container_name: prompt-injection-jupyter
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data
+      - ./analysis:/app/analysis
+    environment:
+      - PYTHONUNBUFFERED=1
+      - JUPYTER_ENABLE_LAB=yes
+    command: >
+      bash -c "pip install jupyter jupyterlab &&
+               jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+               --NotebookApp.token='' --NotebookApp.password=''"
+    networks:
+      - benchmark-network
+
+  # Experiment runner service
+  experiment:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agentic-prompt-injection-benchmark:latest
+    container_name: prompt-injection-experiment
+    volumes:
+      - ./data:/app/data
+      - ./experiments:/app/experiments
+    environment:
+      - PYTHONUNBUFFERED=1
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    command: python scripts/demo_basic.py
+    networks:
+      - benchmark-network
+
+  # Demo services
+  demo-basic:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agentic-prompt-injection-benchmark:latest
+    container_name: prompt-injection-demo-basic
+    volumes:
+      - ./data:/app/data
+    command: python scripts/demo_basic.py
+    networks:
+      - benchmark-network
+    profiles:
+      - demo
+
+  demo-defenses:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agentic-prompt-injection-benchmark:latest
+    container_name: prompt-injection-demo-defenses
+    volumes:
+      - ./data:/app/data
+    command: python scripts/demo_defenses.py
+    networks:
+      - benchmark-network
+    profiles:
+      - demo
+
+  demo-transferability:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agentic-prompt-injection-benchmark:latest
+    container_name: prompt-injection-demo-transfer
+    volumes:
+      - ./data:/app/data
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    command: python scripts/demo_transferability.py
+    networks:
+      - benchmark-network
+    profiles:
+      - demo
+
+networks:
+  benchmark-network:
+    driver: bridge
+
+volumes:
+  data:
+  logs:
+  results:

@@ -1,0 +1,4 @@
+The grid world environment is a 2D space.
+You can move in four cardinal directions.
+Documents are scattered throughout the grid.
+Some documents may contain helpful information.

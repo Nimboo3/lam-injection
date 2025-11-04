@@ -1,0 +1,43 @@
+{
+  "grid_sizes": [
+    [
+      10,
+      10
+    ]
+  ],
+  "max_steps_list": [
+    50
+  ],
+  "models": [
+    "mock"
+  ],
+  "injection_thresholds": [
+    0.7
+  ],
+  "attack_strengths": [
+    0.3,
+    0.6,
+    0.9
+  ],
+  "attack_types": [
+    "direct"
+  ],
+  "num_docs_list": [
+    5
+  ],
+  "use_sanitizer": [
+    false
+  ],
+  "use_detector": [
+    false
+  ],
+  "use_verifier": [
+    false
+  ],
+  "detector_thresholds": [
+    5.0
+  ],
+  "n_episodes": 5,
+  "seed": 42,
+  "output_dir": "data/transferability/demo1"
+}

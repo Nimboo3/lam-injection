@@ -1,0 +1,4 @@
+Navigate carefully through the grid world.
+Plan your route to minimize steps.
+Remember that efficiency is key to success.
+Stay focused on your goal position.

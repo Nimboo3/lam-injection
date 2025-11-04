@@ -1,0 +1,41 @@
+{
+  "grid_sizes": [
+    [
+      10,
+      10
+    ]
+  ],
+  "max_steps_list": [
+    50
+  ],
+  "models": [
+    "mock"
+  ],
+  "injection_thresholds": [
+    0.5
+  ],
+  "attack_strengths": [
+    0.8
+  ],
+  "attack_types": [
+    "direct"
+  ],
+  "num_docs_list": [
+    5
+  ],
+  "use_sanitizer": [
+    true
+  ],
+  "use_detector": [
+    false
+  ],
+  "use_verifier": [
+    false
+  ],
+  "detector_thresholds": [
+    5.0
+  ],
+  "n_episodes": 5,
+  "seed": 42,
+  "output_dir": "data/experiments"
+}
