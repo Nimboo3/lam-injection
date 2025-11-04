@@ -4,6 +4,8 @@ LLM Client Wrapper - Unified interface for mock and real LLM backends.
 Supports:
 - Mock LLM (deterministic, no API key needed)
 - Google Gemini API (requires GEMINI_API_KEY environment variable)
+- Enhanced Gemini Client (gemini-1.5-flash, gemini-1.5-flash-8b)
+- Ollama Local Models (phi3, llama3.2, tinyllama, gemma2:2b)
 """
 
 import os
@@ -17,6 +19,37 @@ from llm.mock_responses import MockLLMResponses
 
 # Load environment variables
 load_dotenv()
+
+
+def create_llm_client(model_name: str = "mock", **kwargs) -> 'LLMClient':
+    """
+    Enhanced factory function to create appropriate LLM client.
+    
+    Automatically routes to specialized clients for better performance:
+    - gemini-1.5-flash, gemini-1.5-flash-8b -> GeminiClient
+    - phi3, llama3.2, tinyllama, gemma2:2b -> OllamaClient
+    - mock -> LLMClient (legacy)
+    - Other Gemini models -> LLMClient (legacy)
+    
+    Args:
+        model_name: Model identifier
+        **kwargs: Additional arguments
+    
+    Returns:
+        Appropriate LLMClient instance
+    """
+    # Route to GeminiClient for enhanced Gemini models
+    if model_name in ["gemini-2.0-flash-exp", "gemini-2.5-flash-lite", "gemini-1.5-flash", "gemini-1.5-flash-8b"]:
+        from llm.gemini_client import GeminiClient
+        return GeminiClient(model_name=model_name, **kwargs)
+    
+    # Route to OllamaClient for local models
+    if model_name in ["phi3", "llama3.2", "tinyllama", "gemma2:2b"]:
+        from llm.ollama_client import OllamaClient
+        return OllamaClient(model_name=model_name, **kwargs)
+    
+    # Legacy LLMClient for mock and other models
+    return LLMClient(model_name=model_name, **kwargs)
 
 
 class LLMClient:
@@ -236,20 +269,6 @@ class LLMClient:
             self.mock_llm.reset_call_count()
 
 
-def create_llm_client(model_name: str = "mock", **kwargs) -> LLMClient:
-    """
-    Factory function to create LLM client.
-    
-    Args:
-        model_name: Model identifier ("mock", "gemini-pro", etc.)
-        **kwargs: Additional arguments passed to LLMClient
-    
-    Returns:
-        Initialized LLMClient instance
-    """
-    return LLMClient(model_name=model_name, **kwargs)
-
-
 # Example usage and testing
 if __name__ == "__main__":
     print("=" * 60)
@@ -258,7 +277,7 @@ if __name__ == "__main__":
     
     # Test mock client
     print("\n[1] Testing Mock LLM...")
-    mock_client = LLMClient(model_name="mock")
+    mock_client = create_llm_client(model_name="mock")
     
     test_prompt = """
     Agent position: (2, 3)
@@ -289,5 +308,21 @@ if __name__ == "__main__":
     response = mock_client.generate(injection_prompt)
     print(f"Response (with strong attack): {response}")
     
+    # Test enhanced Gemini (if API key available)
+    if os.getenv("GEMINI_API_KEY"):
+        print("\n[3] Testing Enhanced Gemini Client...")
+        gemini_client = create_llm_client(model_name="gemini-1.5-flash")
+        print(f"Client type: {type(gemini_client).__name__}")
+    
+    # Test Ollama (if available)
+    print("\n[4] Testing Ollama Client...")
+    try:
+        ollama_client = create_llm_client(model_name="phi3")
+        print(f"Client type: {type(ollama_client).__name__}")
+    except Exception as e:
+        print(f"Ollama not available: {e}")
+    
     print("\n" + "=" * 60)
     print("Demo complete!")
+    print("Use create_llm_client() factory for automatic routing!")
+
