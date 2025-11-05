@@ -96,7 +96,7 @@ python experiments/multi_model_comparison.py
 
 This will:
 1. ✓ Test all 4 models
-2. ✓ Run 5 attack strengths: [0.0, 0.3, 0.5, 0.7, 0.9]
+2. ✓ Run 5 attack strengths: [0.0, 0.2, 0.4, 0.6, 0.8]
 3. ✓ 10 episodes per configuration
 4. ✓ Generate 4 publication-quality plots
 5. ✓ Save results to CSV

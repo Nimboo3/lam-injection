@@ -226,7 +226,7 @@ print_summary_table()
 
 ### Input
 - Models: 4 LLM clients (2 Gemini, 2 Ollama)
-- Attack strengths: [0.0, 0.3, 0.5, 0.7, 0.9]
+- Attack strengths: [0.0, 0.2, 0.4, 0.6, 0.8]
 - Episodes per config: 10 (configurable)
 
 ### Processing
@@ -350,11 +350,11 @@ models['gemma2'] = OllamaClient("gemma2:2b")        # 1.6GB
 ### Experiment Parameters
 ```python
 # Quick test (5 min)
-attack_strengths = [0.0, 0.5, 0.9]
+attack_strengths = [0.0, 0.4, 0.8]
 n_episodes = 5
 
 # Standard (15 min)
-attack_strengths = [0.0, 0.3, 0.5, 0.7, 0.9]
+attack_strengths = [0.0, 0.2, 0.4, 0.6, 0.8]
 n_episodes = 10
 
 # Publication quality (1-2 hours)

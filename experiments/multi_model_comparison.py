@@ -127,7 +127,7 @@ def setup_models() -> Dict:
 
 def run_comparison_experiment(
     models: Dict,
-    attack_strengths: List[float] = [0.0, 0.3, 0.5, 0.7, 0.9],
+    attack_strengths: List[float] = [0.0, 0.2, 0.4, 0.6, 0.8],
     n_episodes: int = 10,
     output_dir: str = "data/multi_model_comparison"
 ) -> pd.DataFrame:
@@ -625,7 +625,7 @@ def main():
     
     results = run_comparison_experiment(
         models=models,
-        attack_strengths=[0.0, 0.3, 0.5, 0.7, 0.9],  # 5 attack levels for good visualization
+        attack_strengths=[0.0, 0.2, 0.4, 0.6, 0.8],  # 5 attack levels with even 0.2 increments
         n_episodes=1 if DEMO_MODE else 3  # Demo = 1, Research = 3
     )
     
